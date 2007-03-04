@@ -1,0 +1,6 @@
+Revision history for Perl extension Math::GAP.
+
+0.01  Mon Feb 19 11:58:12 2007
+	- original version; created by h2xs 1.23 with options
+		-XA -b 5.8.0 -n Math::GAP
+

@@ -1,0 +1,20 @@
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         Math-GAP
+version:      0.02
+version_from: lib/Math/GAP.pm
+installdirs:  site
+requires:
+    Carp:                          0
+    ExtUtils::MakeMaker:           0
+    File::Find:                    0
+    IO::Handle:                    0
+    List::Util:                    0
+    Scalar::Util:                  0
+    Socket:                        0
+    strict:                        0
+    Test::More:                    0
+    warnings:                      0
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.17

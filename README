@@ -1,0 +1,88 @@
+Math-GAP version 0.02
+=====================
+
+This module provide the ability to execute GAP code inside
+Perl. It use GAP interpreters wrapped inside Perl objects. 
+
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+The default GAP interpreter is located during the first step. You should have
+nothing to do if :
+- you can start the GAP interpreter from command line simply typing 'gap'
+  or 'sage -gap' (More precisly if it is in your $PATH).
+- you have set a GAP variable to the correct value, e.g.
+  with bash shell:
+           >export GAP='/my/path/to/sage -gap'
+  or tchsh shell:
+           >setenv GAP '/my/path/to/sage -gap'
+
+Otherwise you will be prompted the location.
+
+Whatever, you can change this default value when creating objets.
+
+
+INSTALLATION in a special dir
+
+You can use LIB=some/path or PREFIX=some/path to change default
+installation directories, e.g
+
+   perl Makefile.PL LIB=some/path
+
+or
+
+   perl Makefile.PL PREFIX=some/path
+
+Make sure some/path appears in the @INC array (set PERLLIB, use
+lib, ect.)
+See ExtUtils::MakeMaker documentation for details
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+  - from Perl core modules :
+  Carp,
+  ExtUtils::MakeMaker,
+  File::Find,
+  IO::Handle,
+  Scalar::Util,
+  Socket,
+  Test::More.
+
+  - a GAP interpreter. It must be installed on your system. If it is installed
+  prior to this module installation, the installation try and set the default
+  path of the interpreter. Otherwise, you will have to set it using a
+  class methode.
+
+SUPPORT AND DOCUMENTATION
+
+After installing, you can find documentation for this module with the perldoc command.
+
+    perldoc Math::GAP
+
+You can also look for information at:
+
+    Search CPAN
+        http://search.cpan.org/dist/Math-GAP
+
+    CPAN Request Tracker:
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Math-GAP
+
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2007 by Fabien Galand
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.8.5 or,
+at your option, any later version of Perl 5 you may have available.
+
+

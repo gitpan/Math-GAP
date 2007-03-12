@@ -3,7 +3,7 @@
 
 #########################
 
-use Test::More tests => 8;
+use Test::More tests => 9;
 BEGIN { use_ok('Math::GAP') };
 
 #########################
@@ -14,19 +14,33 @@ my $output;
 my $line;
 my $term;
 
-my $gap_path = Math::GAP->get_GAP_path();
-$gap_path =~ s/\s+-.+//;
+my $gap_path = Math::GAP->get_GAP();
+$gap_path =~ s{/sage\s+-.+}{/sage};
 
 
 SKIP: {
-skip(
-	'default path for GAP interpreter incorrect ('
-	. $gap_path
-	. ')'
-	,6
-	) if (!-x $gap_path);
 
-ok($term=new Math::GAP,"object creation (launching GAP)");
+skip(
+     'default path for GAP interpreter ('
+     . $gap_path
+     . ') '
+     . 'non executable'
+     ,6
+     ) 
+    unless (-f $gap_path && -x $gap_path);
+
+my $gap_command=join(" ",Math::GAP->get_GAP());
+my $gap_banner = `echo "quit;\n"|$gap_command`;
+
+skip(
+     'exec for GAP seems to be something else than a GAP interpreter',
+     6
+     )
+    unless ($gap_banner =~ /^GAP/ms);
+
+
+ok($term=new Math::GAP,"object creation (launching default GAP)");
+
 
 is($term->get(),'',"reading empty buffer");
 
@@ -60,12 +74,17 @@ is($output,$line,"a long line of GAP output (>78 char)");
 
 }
 
+eval {
+Math::GAP->set_GAP('/a/b', '-c');
+};
+like($@,qr{^Non executable GAP Interpreter},'a wrong GAP path yields a croak');
+
+
 TODO :{
 todo_skip "No yet tested",1;
-Math::GAP->set_GAP_path('a/b -c');
+Math::GAP->set_GAP('a/b', '-c');
 my $pid = $$;
 eval {$term= new Math::GAP;};
 if($pid == $$) {exit;}
 
-like($@,qr{^Problem with exec of 'a//b -c'},'a wrong GAP path');
 }

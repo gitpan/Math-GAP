@@ -5,52 +5,60 @@ use ExtUtils::MakeMaker;
 
 use Carp;
 use List::Util qw(first);
+use File::Find;
+use File::Spec;
 
 my $GAP_path; 
-my $GAP_exec; 
+
 
 if (defined($ENV{GAP})){
-
-	($GAP_path,$GAP_exec)= $ENV{GAP} =~ m[(.*/)([^/]*)];
-	print "Using gap from GAP env. variable\n";
-
+    
+    $GAP_path= $ENV{GAP};
+    print "Using gap from GAP env. variable\n";
+    
 } else {
+    
+    use File::Find;
+    my @dir = split /:/, $ENV{PATH};
+    sub wanted{
+	if($_ eq 'gap.sh'){
+	    $GAP_path = $File::Find::dir . q{/gap.sh};
+	} elsif ($_ eq 'sage'){
+	    $GAP_path = $File::Find::dir . q{/sage -gap};
+	} elsif ($_ eq 'gap'){
+	    $GAP_path = $File::Find::dir . q{/gap};
 
-	use File::Find;
-	my @dir = split /:/, $ENV{PATH};
-	sub wanted{
-  		if($_ eq 'gap.sh'){
-    		$GAP_path = $File::Find::dir . q{/};
-    		$GAP_exec  = 'gap.sh';
-  		} elsif ($_ eq 'sage'){
-    		$GAP_path = $File::Find::dir . q{/};
-    		$GAP_exec  = 'sage -gap';    
-  		} elsif ($_ eq 'gap'){
-    		$GAP_path = $File::Find::dir . q{/};
-    		$GAP_exec  = 'gap';        
-  		}
 	}
-	find(\&wanted,@dir);
-
+    }
+    find(\&wanted,@dir);
+    
 }
+
 
 if(!defined($GAP_path)){
-  print "GAP interpreter not found\n";
-  $GAP_path = prompt("gap path?");
-  $GAP_exec = prompt("gap exec?");
+
+    print "GAP interpreter not found\n";
+    $GAP_path = prompt("Absolut path to gap exec?");
+    $GAP_path =~ s/^\s*//;
+    $GAP_path =~ s/\s*$//;
+
+} else {
+    $GAP_path=File::Spec->rel2abs($GAP_path);
 }
 
-(my $command="$GAP_path/$GAP_exec" ) =~ s/\s+-.+//;;
-if(!-x $command) {
+my $command=$GAP_path;
+$command =~ s{/sage\s.*}{/sage};
+if(! (-f $command) && (-x _) ) {
 print <<"WARN";
-Non executable GAP interpreter
-Several tests won't be preformed
+**Non executable GAP interpreter
+**Several tests won't be performed
+**You are advised to check/fix and rerun with a correct GAP exec
 WARN
 }
 
 print <<"INFO";
 Will use :
-$GAP_path/$GAP_exec
+$GAP_path
 as default GAP interpreter
 INFO
 
@@ -59,34 +67,31 @@ my $file;
 my $module_path = q(lib/Math/GAP.pm);
 
 open ($file,"<",$module_path)
-	or croak "Can't read from $module_path : $!";
+	or croak "Can't read from $module_path: $!";
 my @lines=<$file>;
 close $file;
 
 #look for 'my $$var' in line $l and set it to $value
 sub change_value {
-	my ($var,$value)= @_[1..2];
-	if($_[0]  =~ s/
-		(
-		 my \s+ \$$var \s+ = \s+
-		)
-		('[^']*')
-		(
-		\s*;\s*
-		#set at installation
-		)
-		 /$1'$value'$3/x)
-		 {return 1;}
+    my ($var,$value)= @_[1..2];
+    if($_[0]  =~ s/
+       (
+	my \s+ \$$var \s+ = \s+
+	)
+       ('[^']*')
+       (
+       \s*;\s*
+       #set at installation
+       )
+       /$1'$value'$3/x)
+       {return 1;}
 		 
 	return 0;
 }
 
 first {change_value($_,'GAP_path',$GAP_path)} @lines
-	or die "GAP path not found!";
+	or die "GAP path not found in $module_path!";
 	
-first {change_value($_,'GAP_exec',$GAP_exec)} @lines
-	or die "GAP exec not found!";
-
 
 open ($file,">",$module_path)
 	or croak "Can't write to $module_path : $!";
@@ -105,6 +110,7 @@ WriteMakefile(
 			'Carp'                => 0,
   			'ExtUtils::MakeMaker' => 0,
   			'File::Find'          => 0,
+                        'File::Spec'          => 0,
 			'List::Util'	      => 0,
   			'IO::Handle'          => 0,
   			'Scalar::Util'        => 0,

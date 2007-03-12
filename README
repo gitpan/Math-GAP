@@ -1,8 +1,8 @@
-Math-GAP version 0.02
+Math-GAP version 0.03
 =====================
 
-This module provide the ability to execute GAP code inside
-Perl. It use GAP interpreters wrapped inside Perl objects. 
+This module provides the ability to execute GAP code inside
+Perl. It uses GAP interpreters wrapped inside Perl objects. 
 
 
 INSTALLATION
@@ -17,7 +17,7 @@ To install this module type the following:
 The default GAP interpreter is located during the first step. You should have
 nothing to do if :
 - you can start the GAP interpreter from command line simply typing 'gap'
-  or 'sage -gap' (More precisly if it is in your $PATH).
+  or 'sage -gap' (More precisely if it is in your $PATH).
 - you have set a GAP variable to the correct value, e.g.
   with bash shell:
            >export GAP='/my/path/to/sage -gap'
@@ -26,7 +26,7 @@ nothing to do if :
 
 Otherwise you will be prompted the location.
 
-Whatever, you can change this default value when creating objets.
+Whatever, you can change this default value when creating objects.
 
 
 INSTALLATION in a special dir
@@ -40,8 +40,8 @@ or
 
    perl Makefile.PL PREFIX=some/path
 
-Make sure some/path appears in the @INC array (set PERLLIB, use
-lib, ect.)
+Make sure the final module path appears in the @INC array (set PERL5LIB, use
+lib, ect.) when you exec your Perl code.
 See ExtUtils::MakeMaker documentation for details
 
 DEPENDENCIES
@@ -52,6 +52,7 @@ This module requires these other modules and libraries:
   Carp,
   ExtUtils::MakeMaker,
   File::Find,
+  File::Spec,
   IO::Handle,
   Scalar::Util,
   Socket,
@@ -60,7 +61,7 @@ This module requires these other modules and libraries:
   - a GAP interpreter. It must be installed on your system. If it is installed
   prior to this module installation, the installation try and set the default
   path of the interpreter. Otherwise, you will have to set it using a
-  class methode.
+  class method.
 
 SUPPORT AND DOCUMENTATION
 

@@ -1,6 +1,18 @@
 Revision history for Perl extension Math::GAP.
 
+0.03  Mon Mar 12 2007
+        - Break in compatibility with previous version (v<=0.02)
+	  Math::GAP->get_GAP_path() and Math::GAP->set_GAP_path()
+	  have changed ! In fact, they disappeared.
+	  See get_path() and set_path() documentation
+        - some documentation added/corrected
+        - some tests added
+
+0.02  
+        - some documentation added
+        - changes in internals (socketpair instead of open2; GAP parsing)
+
 0.01  Mon Feb 19 11:58:12 2007
-	- original version; created by h2xs 1.23 with options
-		-XA -b 5.8.0 -n Math::GAP
+	- original version;
+
 
